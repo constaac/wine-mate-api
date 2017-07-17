@@ -3,7 +3,7 @@ class InventoriesController < OpenReadController
 
   # GET /inventories
   def index
-    @inventories = Inventory.all
+    @inventories = current_user.inventories.all
 
     render json: @inventories
   end
@@ -15,7 +15,7 @@ class InventoriesController < OpenReadController
 
   # POST /inventories
   def create
-    @inventory = Inventory.new(inventory_params)
+    @inventory = current_user.inventories.build(inventory_params)
 
     if @inventory.save
       render json: @inventory, status: :created, location: @inventory
@@ -27,7 +27,7 @@ class InventoriesController < OpenReadController
   # PATCH/PUT /inventories/1
   def update
     if @inventory.update(inventory_params)
-      render json: @inventory
+      head :no_content
     else
       render json: @inventory.errors, status: :unprocessable_entity
     end
@@ -41,7 +41,7 @@ class InventoriesController < OpenReadController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_inventory
-      @inventory = Inventory.find(params[:id])
+      @inventory = current_user.inventories.find(params[:id])
     end
 
     # Only allow a trusted parameter "white list" through.
