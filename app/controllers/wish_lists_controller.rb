@@ -1,4 +1,4 @@
-class WishListsController < ApplicationController
+class WishListsController < OpenReadController
   before_action :set_wish_list, only: [:show, :update, :destroy]
 
   # GET /wish_lists

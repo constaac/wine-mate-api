@@ -1,4 +1,4 @@
-class InventoriesController < ApplicationController
+class InventoriesController < OpenReadController
   before_action :set_inventory, only: [:show, :update, :destroy]
 
   # GET /inventories
