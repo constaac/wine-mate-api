@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2) do
+ActiveRecord::Schema.define(version: 20170717153719) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,6 +23,20 @@ ActiveRecord::Schema.define(version: 2) do
     t.index ["user_id"], name: "index_examples_on_user_id", using: :btree
   end
 
+  create_table "inventories", force: :cascade do |t|
+    t.string   "name",       default: "",         null: false
+    t.string   "winery",     default: "",         null: false
+    t.string   "size",       default: "Standard", null: false
+    t.string   "location"
+    t.integer  "vintage"
+    t.string   "grape"
+    t.integer  "quantity",   default: 1,          null: false
+    t.integer  "user_id",                         null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+    t.index ["user_id"], name: "index_inventories_on_user_id", using: :btree
+  end
+
   create_table "users", force: :cascade do |t|
     t.string   "email",           null: false
     t.string   "token",           null: false
@@ -33,5 +47,20 @@ ActiveRecord::Schema.define(version: 2) do
     t.index ["token"], name: "index_users_on_token", unique: true, using: :btree
   end
 
+  create_table "wish_lists", force: :cascade do |t|
+    t.string   "name",       default: "",         null: false
+    t.string   "winery",     default: "",         null: false
+    t.string   "size",       default: "Standard", null: false
+    t.string   "location"
+    t.integer  "vintage"
+    t.string   "grape"
+    t.integer  "user_id",                         null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+    t.index ["user_id"], name: "index_wish_lists_on_user_id", using: :btree
+  end
+
   add_foreign_key "examples", "users"
+  add_foreign_key "inventories", "users"
+  add_foreign_key "wish_lists", "users"
 end
