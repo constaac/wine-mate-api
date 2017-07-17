@@ -3,7 +3,7 @@ class WishListsController < OpenReadController
 
   # GET /wish_lists
   def index
-    @wish_lists = WishList.all
+    @wish_lists = current_user.wish_lists.all
 
     render json: @wish_lists
   end
@@ -15,7 +15,7 @@ class WishListsController < OpenReadController
 
   # POST /wish_lists
   def create
-    @wish_list = WishList.new(wish_list_params)
+    @wish_list = current_user.wish_lists.build(wish_list_params)
 
     if @wish_list.save
       render json: @wish_list, status: :created, location: @wish_list
@@ -27,7 +27,7 @@ class WishListsController < OpenReadController
   # PATCH/PUT /wish_lists/1
   def update
     if @wish_list.update(wish_list_params)
-      render json: @wish_list
+      head :no_content
     else
       render json: @wish_list.errors, status: :unprocessable_entity
     end
@@ -41,7 +41,7 @@ class WishListsController < OpenReadController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_wish_list
-      @wish_list = WishList.find(params[:id])
+      @wish_list = current_user.wish_lists.find(params[:id])
     end
 
     # Only allow a trusted parameter "white list" through.
