@@ -14,6 +14,7 @@
 * [`active_model_serializers`](https://github.com/rails-api/active_model_serializers)
 * [`ruby`](https://www.ruby-lang.org/en/)
 * [`postgres`](http://www.postgresql.org)
+* [heroku](https://www.heroku.com/home)
 
 This API was built in Ruby and is entirely powered by Ruby on Rails. It is backed
 by a Postgres SQL database, which Rails communicates with using Active Record.
