@@ -9,7 +9,8 @@ curl "${API}${URL_PATH}" \
   --header "Authorization: Token token=$TOKEN" \
   --data '{
     "wish_list": {
-      "name": "testname"
+      "name": "'${NAME}'",
+      "winery": "'${WINERY}'"
     }
   }'
 

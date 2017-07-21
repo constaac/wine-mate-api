@@ -1,62 +1,29 @@
-[![General Assembly Logo](https://camo.githubusercontent.com/1a91b05b8f4d44b5bbfb83abac2b0996d8e26c92/687474703a2f2f692e696d6775722e636f6d2f6b6538555354712e706e67)](https://generalassemb.ly/education/web-development-immersive)
+![Wine Buddy Logo](http://i.imgur.com/WLWCTLl.png)
 
-# rails-api-template
+## Deployment and API URLs
 
-A template for starting projects with `rails-api`. Includes authentication.
+* [Wine Buddy Deployment]()
+* [Winy Buddy API URL]()
+* [Wine Buddy Front-End Repo](https://github.com/constaac/wine-mate-front-end)
+* [Wine Buddy Wiki](https://github.com/constaac/wine-mate-front-end/wiki)
 
-At the beginning of each cohort, update the versions in [`Gemfile`](Gemfile).
+## Technologies Used
+
+* [`rails-api`](https://github.com/rails-api/rails-api)
+* [`rails`](https://github.com/rails/rails)
+* [`active_model_serializers`](https://github.com/rails-api/active_model_serializers)
+* [`ruby`](https://www.ruby-lang.org/en/)
+* [`postgres`](http://www.postgresql.org)
+
+This API was built in Ruby and is entirely powered by Ruby on Rails. It is backed
+by a Postgres SQL database, which Rails communicates with using Active Record.
 
 ## Dependencies
 
+Fork and Clone this repository.
 Install with `bundle install`.
 
--   [`rails-api`](https://github.com/rails-api/rails-api)
--   [`rails`](https://github.com/rails/rails)
--   [`active_model_serializers`](https://github.com/rails-api/active_model_serializers)
--   [`ruby`](https://www.ruby-lang.org/en/)
--   [`postgres`](http://www.postgresql.org)
-
-Until Rails 5 is released, this template should follow the most recent released
-version of Rails 4, as well as track `master` branches for `rails-api` and
-`active_model_serializers`.
-
-## Installation
-
-1.  [Download](../../archive/master.zip) this template.
-1.  Unzip and rename the template directory.
-1.  Empty [`README.md`](README.md) and fill with your own content.
-1.  Move into the new project and `git init`.
-1.  Install dependencies with `bundle install`.
-1.  Rename your app module in `config/application.rb` (change
-    `RailsApiTemplate`).
-1.  Rename your project database in `config/database.yml` (change
-    `'rails-api-template'`).
-1.  Create a `.env` for sensitive settings (`touch .env`).
-1.  Generate new `development` and `test` secrets (`bundle exec rake secret`).
-1.  Store them in `.env` with keys `SECRET_KEY_BASE_<DEVELOPMENT|TEST>`
-    respectively.
-1.  In order to make requests to your deployed API, you will need to set
-    `SECRET_KEY_BASE` in the environment of the production API (using `heroku
-    config:set` or the Heroku dashboard).
-1.  In order to make requests from your deployed client application, you will
-    need to set `CLIENT_ORIGIN` in the environment of the production API (e.g.
-    `heroku config:set CLIENT_ORIGIN https://<github-username>.github.io`).
-1.  Setup your database with `bin/rake db:nuke_pave` or `bundle exec rake
-    db:nuke_pave`.
-1.  Run the API server with `bin/rails server` or `bundle exec rails server`.
-
-## Structure
-
-This template follows the standard project structure in Rails 4.
-
-`curl` command scripts are stored in [`scripts`](scripts) with names that
-correspond to API actions.
-
-User authentication is built-in.
-
-## Tasks
-
-Developers should run these often!
+## Testing Scripts and Development Tasks
 
 -   `bin/rake routes` lists the endpoints available in your API.
 -   `bin/rake test` runs automated tests.
@@ -65,18 +32,43 @@ Developers should run these often!
 -   `bin/rails server` starts the API.
 -   `scripts/*.sh` run various `curl` commands to test the API. See below.
 
-<!-- TODO -   `rake nag` checks your code style. -->
-<!-- TODO -   `rake lint` checks your code for syntax errors. -->
+## ERD Diagram
+
+![Wine Buddy ERD](http://i.imgur.com/8OsRaUy.png)
+
+## Development Approach
+
+The development process began with envisioning what kind of resources my application
+would have to persist. After wireframing, I came to the conclusion that my user stories
+were revolving around creating a list for a collection and a list for a wish list. Since
+I didn't plan on making my application a social network of sorts, I didn't need to make
+users' lists public to others, and since users currently one have one list for each resource,
+my ERD was pretty straight foreward to develop.
+
+The ERD revolves around users owning inventory items and wish-list items. These two
+resources are stores in two different tables, and belong to users via user ID. Users
+share a one-to-many relationship with both Inventory items and Wish List items.
+
+From that point, I simply scaffolded my resources, and then customized them to protect
+against malicious curl scripting from other users. To do this, I used the OpenReadController
+class to require authentication, set current user via auth Token, and then only allow
+requests that affected entries that belonged to the user associated with the token.
+
+## Hurdles and Unsolved Problems
+
+The development process for the API was pretty straightforeward. I didn't run into
+many issues.
+
+One difficult aspect was the fact that I had built the back end before I began building
+the front end. Since I didn't know what routes the Ember applicaiton was going to
+expect, I had to do some guesswork in the meantime. I wound up setting things up well
+enough that I didn't have to edit any of the routes.
 
 ## API
 
-Use this as the basis for your own API documentation. Add a new third-level
-heading for your custom entities, and follow the pattern provided for the
-built-in user authentication documentation.
+Routes: Authentication, Inventories, and Wish Lists
 
-Scripts are included in [`scripts`](scripts) to test built-in actions. Add your
-own scripts to test your custom API. As an alternative, you can write automated
-tests in RSpec to test your API.
+Scripts are included in [`scripts`](scripts) to test built-in actions.
 
 ### Authentication
 
@@ -206,73 +198,368 @@ Response:
 HTTP/1.1 204 No Content
 ```
 
-### Users
+### Inventories
 
-| Verb | URI Pattern | Controller#Action |
-|------|-------------|-------------------|
-| GET  | `/users`    | `users#index`     |
-| GET  | `/users/1`  | `users#show`      |
+| Verb   | URI Pattern            | Controller#Action     |
+|--------|------------------------|-----------------------|
+| GET    | `/inventories`         | `inventories#index`   |
+| GET    | `/inventories/:id`     | `inventories#show`    |
+| POST   | `/inventories`         | `inventories#create`  |
+| PATCH  | `/inventories/:id`     | `inventories#update`  |
+| DELETE | `/inventories/:id`     | `inventories#destroy` |
 
-#### GET /users
+#### GET /inventories
 
 Request:
 
 ```sh
-curl http://localhost:4741/users \
+API="${API_ORIGIN:-http://localhost:4741}"
+URL_PATH="/inventories"
+curl "${API}${URL_PATH}" \
   --include \
   --request GET \
   --header "Authorization: Token token=$TOKEN"
 ```
 
 ```sh
-TOKEN=BAhJIiVlZDIwZTMzMzQzODg5NTBmYjZlNjRlZDZlNzYxYzU2ZAY6BkVG--7e7f77f974edcf5e4887b56918f34cd9fe293b9f scripts/users.sh
+TOKEN=<token> scripts/index-inv.sh
 ```
 
 Response:
 
 ```md
 HTTP/1.1 200 OK
+X-Frame-Options: SAMEORIGIN
+X-XSS-Protection: 1; mode=block
+X-Content-Type-Options: nosniff
 Content-Type: application/json; charset=utf-8
+ETag: W/"216834a662c6dcd056720ece05d6194f"
+Cache-Control: max-age=0, private, must-revalidate
+X-Request-Id: f0cf83c5-7557-4dbc-a52c-5e4c5bca65a0
+X-Runtime: 0.392036
+Vary: Origin
+Transfer-Encoding: chunked
 
-{
-  "users": [
-    {
-      "id": 2,
-      "email": "bob@ava.com"
-    },
-    {
-      "id": 1,
-      "email": "ava@bob.com"
-    }
-  ]
-}
+{"inventories":[]}
 ```
 
-#### GET /users/:id
+#### GET /inventories/:id
 
 Request:
 
 ```sh
-curl --include --request GET http://localhost:4741/users/$ID \
+API="${API_ORIGIN:-http://localhost:4741}"
+URL_PATH="/inventories/${ID}"
+curl "${API}${URL_PATH}" \
+  --include \
+  --request GET \
   --header "Authorization: Token token=$TOKEN"
 ```
 
 ```sh
-ID=2 TOKEN=BAhJIiVlZDIwZTMzMzQzODg5NTBmYjZlNjRlZDZlNzYxYzU2ZAY6BkVG--7e7f77f974edcf5e4887b56918f34cd9fe293b9f scripts/user.sh
+TOKEN=<token> ID=1 sh scripts/show-inv.sh
 ```
 
 Response:
 
 ```md
 HTTP/1.1 200 OK
+X-Frame-Options: SAMEORIGIN
+X-XSS-Protection: 1; mode=block
+X-Content-Type-Options: nosniff
 Content-Type: application/json; charset=utf-8
+ETag: W/"370c3c9f61a311e13a207824f3588583"
+Cache-Control: max-age=0, private, must-revalidate
+X-Request-Id: 757a6d38-05da-4f7a-81ba-3764a8b608f6
+X-Runtime: 0.376739
+Vary: Origin
+Transfer-Encoding: chunked
 
-{
-  "user": {
-    "id": 2,
-    "email": "bob@ava.com"
-  }
-}
+{"inventory":{"id":1,"name":"testname","winery":"","size":"Standard","location":null,"vintage":null,"grape":null,"quantity":1}}
+```
+
+#### POST /inventories
+
+Request:
+
+```sh
+API="${API_ORIGIN:-http://localhost:4741}"
+URL_PATH="/inventories"
+curl "${API}${URL_PATH}" \
+  --include \
+  --request POST \
+  --header "Content-Type: application/json" \
+  --header "Authorization: Token token=$TOKEN" \
+  --data '{
+    "inventory": {
+      "name": "'${NAME}'",
+      "winery": "'${WINERY}'",
+    }
+  }'
+```
+
+```sh
+TOKEN=<token> NAME=name WINERY=winery sh scripts/create-inv.sh
+```
+
+Response:
+
+```md
+HTTP/1.1 201 Created
+X-Frame-Options: SAMEORIGIN
+X-XSS-Protection: 1; mode=block
+X-Content-Type-Options: nosniff
+Location: http://localhost:4741/inventories/32
+Content-Type: application/json; charset=utf-8
+ETag: W/"370c3c9f61a311e13a207824f3588583"
+Cache-Control: max-age=0, private, must-revalidate
+X-Request-Id: 27072928-6f11-405a-84ae-8997c367f13b
+X-Runtime: 1.024435
+Vary: Origin
+Transfer-Encoding: chunked
+
+{"inventory":{"id":1,"name":"testname","winery":"","size":"Standard","location":null,"vintage":null,"grape":null,"quantity":1}}
+```
+
+#### PATCH /inventories/:id
+
+Request:
+
+```sh
+API="${API_ORIGIN:-http://localhost:4741}"
+URL_PATH="/inventories"
+curl "${API}${URL_PATH}/${ID}" \
+  --include \
+  --request PATCH \
+  --header "Content-Type: application/json" \
+  --header "Authorization: Token token=$TOKEN" \
+  --data '{
+    "inventory": {
+      "name": "'${NAME}'"
+    }
+  }'
+```
+
+```sh
+TOKEN=<token> ID=1 NAME=NewName sh scripts/update-inv.sh
+```
+
+Response:
+
+```md
+HTTP/1.1 204 No Content
+X-Frame-Options: SAMEORIGIN
+X-XSS-Protection: 1; mode=block
+X-Content-Type-Options: nosniff
+Cache-Control: no-cache
+X-Request-Id: 67719567-09a9-4fdd-8579-35b33d7ae4dd
+X-Runtime: 0.565348
+Vary: Origin
+```
+
+#### DELETE /inventories/:id
+
+Request:
+
+```sh
+API="${API_ORIGIN:-http://localhost:4741}"
+URL_PATH="/inventories/${ID}"
+curl "${API}${URL_PATH}" \
+  --include \
+  --request DELETE \
+  --header "Authorization: Token token=$TOKEN"
+```
+
+```sh
+ID=1 TOKEN=<token> scripts/destroy-inv.sh
+```
+
+Response:
+
+```md
+HTTP/1.1 204 No Content
+```
+
+### Wish Lists
+
+| Verb   | URI Pattern            | Controller#Action     |
+|--------|------------------------|-----------------------|
+| GET    | `/wish_lists`         | `wish_lists#index`     |
+| GET    | `/wish_lists/:id`     | `wish_lists#show`      |
+| POST   | `/wish_lists`         | `wish_lists#create`    |
+| PATCH  | `/wish_lists/:id`     | `wish_lists#update`    |
+| DELETE | `/wish_lists/:id`     | `wish_lists#destroy`   |
+
+#### GET /inventories
+
+Request:
+
+```sh
+API="${API_ORIGIN:-http://localhost:4741}"
+URL_PATH="/wish_lists"
+curl "${API}${URL_PATH}" \
+  --include \
+  --request GET \
+  --header "Authorization: Token token=$TOKEN"
+```
+
+```sh
+TOKEN=<token> scripts/index-wl.sh
+```
+
+Response:
+
+```md
+HTTP/1.1 200 OK
+X-Frame-Options: SAMEORIGIN
+X-XSS-Protection: 1; mode=block
+X-Content-Type-Options: nosniff
+Content-Type: application/json; charset=utf-8
+ETag: W/"939bd2db777351a117e09fb9aa814a0c"
+Cache-Control: max-age=0, private, must-revalidate
+X-Request-Id: 453ba726-fb11-4e7c-a15c-0edea92033ac
+X-Runtime: 0.428107
+Vary: Origin
+Transfer-Encoding: chunked
+
+{"wish_lists":[]}
+```
+
+#### GET /wish_lists/:id
+
+Request:
+
+```sh
+API="${API_ORIGIN:-http://localhost:4741}"
+URL_PATH="/wish_lists/${ID}"
+curl "${API}${URL_PATH}" \
+  --include \
+  --request GET \
+  --header "Authorization: Token token=$TOKEN"
+```
+
+```sh
+TOKEN=<token> ID=1 sh scripts/show-wl.sh
+```
+
+Response:
+
+```md
+HTTP/1.1 200 OK
+X-Frame-Options: SAMEORIGIN
+X-XSS-Protection: 1; mode=block
+X-Content-Type-Options: nosniff
+Content-Type: application/json; charset=utf-8
+ETag: W/"370c3c9f61a311e13a207824f3588583"
+Cache-Control: max-age=0, private, must-revalidate
+X-Request-Id: 757a6d38-05da-4f7a-81ba-3764a8b608f6
+X-Runtime: 0.376739
+Vary: Origin
+Transfer-Encoding: chunked
+
+{"wish_list":{"id":1,"name":"testname","winery":"winery","size":"Standard","location":null,"vintage":null,"grape":null}}
+```
+
+#### POST /wish_lists
+
+Request:
+
+```sh
+API="${API_ORIGIN:-http://localhost:4741}"
+URL_PATH="/wish_lists"
+curl "${API}${URL_PATH}" \
+  --include \
+  --request POST \
+  --header "Content-Type: application/json" \
+  --header "Authorization: Token token=$TOKEN" \
+  --data '{
+    "wish_list": {
+      "name": "'${NAME}'",
+      "winery": "'${WINERY}'",
+    }
+  }'
+```
+
+```sh
+TOKEN=<token> NAME=testname WINERY=winery sh scripts/create-wl.sh
+```
+
+Response:
+
+```md
+HTTP/1.1 201 Created
+X-Frame-Options: SAMEORIGIN
+X-XSS-Protection: 1; mode=block
+X-Content-Type-Options: nosniff
+Location: http://localhost:4741/wish_lists/32
+Content-Type: application/json; charset=utf-8
+ETag: W/"370c3c9f61a311e13a207824f3588583"
+Cache-Control: max-age=0, private, must-revalidate
+X-Request-Id: 27072928-6f11-405a-84ae-8997c367f13b
+X-Runtime: 1.024435
+Vary: Origin
+Transfer-Encoding: chunked
+
+{"wish_list":{"id":1,"name":"testname","winery":"winery","size":"Standard","location":null,"vintage":null,"grape":null}}
+```
+
+#### PATCH /wish_lists/:id
+
+Request:
+
+```sh
+API="${API_ORIGIN:-http://localhost:4741}"
+URL_PATH="/wish_lists"
+curl "${API}${URL_PATH}/${ID}" \
+  --include \
+  --request PATCH \
+  --header "Content-Type: application/json" \
+  --header "Authorization: Token token=$TOKEN" \
+  --data '{
+    "wish_list": {
+      "name": "'${NAME}'"
+    }
+  }'
+```
+
+```sh
+TOKEN=<token> ID=1 NAME=NewName sh scripts/update-wl.sh
+```
+
+Response:
+
+```md
+HTTP/1.1 204 No Content
+X-Frame-Options: SAMEORIGIN
+X-XSS-Protection: 1; mode=block
+X-Content-Type-Options: nosniff
+Cache-Control: no-cache
+X-Request-Id: 67719567-09a9-4fdd-8579-35b33d7ae4dd
+X-Runtime: 0.565348
+Vary: Origin
+```
+
+#### DELETE /wish_lists/:id
+
+Request:
+
+```sh
+API="${API_ORIGIN:-http://localhost:4741}"
+URL_PATH="/wish_lists/${ID}"
+curl "${API}${URL_PATH}" \
+  --include \
+  --request DELETE \
+  --header "Authorization: Token token=$TOKEN"
+```
+
+```sh
+ID=1 TOKEN=<token> scripts/destroy-wl.sh
+```
+
+Response:
+
+```md
+HTTP/1.1 204 No Content
 ```
 
 ### Reset Database without dropping
@@ -285,16 +572,3 @@ This is not a task developers should run often, but it is sometimes necessary.
 bin/rake db:migrate VERSION=0
 bin/rake db:migrate db:seed db:examples
 ```
-
-**heroku**
-
-```sh
-heroku run rake db:migrate VERSION=0
-heroku run rake db:migrate db:seed db:examples
-```
-
-## [License](LICENSE)
-
-1.  All content is licensed under a CC­BY­NC­SA 4.0 license.
-1.  All software code is licensed under GNU GPLv3. For commercial use or
-    alternative licensing, please contact legal@ga.co.
