@@ -2,10 +2,10 @@
 
 ## Deployment and API URLs
 
-* [Wine Buddy Deployment]()
-* [Winy Buddy API URL]()
+* [Wine Buddy Deployment](https://constaac.github.io/wine-mate-front-end/)
+* [Winy Buddy API URL](https://wine-buddy-api.herokuapp.com/)
 * [Wine Buddy Front-End Repo](https://github.com/constaac/wine-mate-front-end)
-* [Wine Buddy Wiki](https://github.com/constaac/wine-mate-front-end/wiki)
+* [Wine Buddy API Wiki](https://github.com/constaac/wine-mate-api/wiki)
 
 ## Technologies Used
 
